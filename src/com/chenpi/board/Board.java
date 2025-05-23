@@ -11,6 +11,7 @@ public class Board {
   public Board(int width, int height) {
     this.width = width;
     this.height = height;
+    this.grid = new PieceType[width][height];
     for (int i = 0; i < height; i++) {
       for (int j = 0; j < width; j++) {
         grid[i][j] = PieceType.NONE;
@@ -36,11 +37,28 @@ public class Board {
     }
   }
 
+
+  public boolean isCellValid(Point point) {
+    return point.getX() < width && point.getY() < height;
+  }
+
   public PieceType getPieceType(Point point) {
     return grid[point.getX()][point.getY()];
   }
 
-  public boolean isCellValid(Point point) {
-    return point.getX() < width && point.getY() < height;
+  public int getWidth() {
+    return width;
+  }
+
+  public int getHeight() {
+    return height;
+  }
+
+  public void clearBoard() {
+    for (int i = 0; i < height; i++) {
+      for (int j = 0; j < width; j++) {
+        grid[i][j] = PieceType.NONE;
+      }
+    }
   }
 }

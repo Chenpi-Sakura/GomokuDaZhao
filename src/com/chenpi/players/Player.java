@@ -12,4 +12,16 @@ public class Player {
     this.id = id;
     this.pieceType = pieceType;
   }
+
+  public String getName() {
+    return name;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public PieceType getPieceType() {
+    return pieceType;
+  }
 }
