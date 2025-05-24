@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="GomokuDaZhaoVersion:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/GomokuDaZhaoVersion_jar</output-path>
-    <root id="archive" name="GomokuDaZhaoVersion.jar">
-      <element id="module-output" name="GomokuDaZhaoVersion" />
-    </root>
-  </artifact>
-</component>
