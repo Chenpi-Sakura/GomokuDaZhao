@@ -1,5 +1,6 @@
-package com.chenpi.UI;
+package com.chenpi.UI.gaming;
 
+import com.chenpi.UI.WinMessage;
 import com.chenpi.gameController.GameController;
 import com.chenpi.gameState.GameState;
 import com.chenpi.utils.PieceType;
@@ -11,9 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 class BoardPanel extends JPanel {
-  private static final int PADDING = 40;
-  private static final int CELL_SIZE = 40;
-
   private GameState gameState;
   private GameController gameController;
 
@@ -24,8 +22,13 @@ class BoardPanel extends JPanel {
     addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
-        int x = (e.getX() - PADDING + CELL_SIZE / 2) / CELL_SIZE;
-        int y = (e.getY() - PADDING + CELL_SIZE / 2) / CELL_SIZE;
+        int[] layout = getBoardLayout();
+        int LRPadding = layout[0];
+        int UDPadding = layout[1];
+        int cellSize = layout[2];
+
+        int x = (e.getX() - LRPadding + cellSize / 2) / cellSize;
+        int y = (e.getY() - UDPadding + cellSize / 2) / cellSize;
         Point point = new Point(x, y);
 
         boolean win = BoardPanel.this.gameController.placePiece(point);
@@ -43,7 +46,6 @@ class BoardPanel extends JPanel {
             ).setVisible(true);
           });
         }
-        BoardPanel.this.repaint();
       }
     });
   }
@@ -51,29 +53,38 @@ class BoardPanel extends JPanel {
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
+
+    Graphics2D g2 = (Graphics2D) g;
+    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // 抗锯齿效果
+
+    int[] layout = getBoardLayout();
+    int LRPadding = layout[0];
+    int UDPadding = layout[1];
+    int cellSize = layout[2];
+
     g.setColor(new Color(245, 222, 179));
     g.fillRect(0, 0, getWidth(), getHeight());
     g.setColor(Color.BLACK);
 
     for (int i = 0; i < gameState.getBoard().getHeight(); i++) {
-      int y = PADDING + i * CELL_SIZE;
-      g.drawLine(PADDING, y, PADDING + (gameState.getBoard().getWidth() - 1) * CELL_SIZE, y);
+      int y = UDPadding + i * cellSize;
+      g.drawLine(LRPadding, y, LRPadding + (gameState.getBoard().getWidth() - 1) * cellSize, y);
     }
 
     for (int i = 0; i < gameState.getBoard().getWidth(); i++) {
-      int x = PADDING + i * CELL_SIZE;
-      g.drawLine(x, PADDING, x, PADDING + (gameState.getBoard().getHeight() - 1) * CELL_SIZE);
+      int x = LRPadding + i * cellSize;
+      g.drawLine(x, UDPadding, x, UDPadding + (gameState.getBoard().getHeight() - 1) * cellSize);
     }
 
     for (int x = 0; x < gameState.getBoard().getWidth(); x++) {
       for (int y = 0; y < gameState.getBoard().getHeight(); y++) {
         Point point = new Point(x, y);
-        printPiece(point, g);
+        printPiece(point, g2, layout, cellSize);
       }
     }
   }
 
-  private void printPiece(Point point, Graphics g) {
+  private void printPiece(Point point, Graphics g, int[] layout, int cellSize) {
     PieceType type = gameState.getBoard().getPieceType(point);
     switch (type) {
       case RED:
@@ -85,9 +96,31 @@ class BoardPanel extends JPanel {
       case BLUE:
         g.setColor(Color.BLUE);
         break;
+      case GREEN:
+        g.setColor(Color.GREEN);
       default:
         return;
     }
-    g.fillOval(PADDING + point.getX() * CELL_SIZE - 15, PADDING + point.getY() * CELL_SIZE - 15, 30, 30);
+
+    int pieceSize = (int)(cellSize * 0.75);
+    int offset = pieceSize / 2;
+
+    g.fillOval(
+            layout[0] + point.getX() * cellSize - offset,
+            layout[1] + point.getY() * cellSize - offset,
+            pieceSize, pieceSize
+    );
+  }
+
+  private int[] getBoardLayout() {
+    int w = getWidth();
+    int h = getHeight();
+    int rows = gameState.getBoard().getHeight();
+    int cols = gameState.getBoard().getWidth();
+
+    int cellSize = Math.min((w - 40) / cols, (h - 40) / rows);
+    int LRPadding = (w - cellSize * (cols - 1)) / 2;
+    int UDPadding = (h - cellSize * (rows - 1)) / 2;
+    return new int[]{LRPadding, UDPadding, cellSize};
   }
 }

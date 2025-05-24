@@ -4,5 +4,6 @@ public enum PieceType {
   NONE,
   RED,
   YELLOW,
-  BLUE
+  BLUE,
+  GREEN
 }

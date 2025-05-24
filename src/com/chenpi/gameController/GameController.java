@@ -15,7 +15,7 @@ public class GameController {
   }
 
   public boolean placePiece(Point point) {
-    if (gameState.getBoard().isCellValid(point) && gameState.getBoard().isCellEmpty(point)) {
+    if (ruleChecker.isValidMove(point)) {
       PieceType type = gameState.getCurrentPlayer().getPieceType();
       gameState.getBoard().placePiece(point, type);
       if (ruleChecker.checkWinCondition(point)) {

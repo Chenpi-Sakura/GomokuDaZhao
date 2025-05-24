@@ -1,4 +1,5 @@
 package com.chenpi.skills;
 
-public class Skill {
+public abstract class Skill {
+
 }

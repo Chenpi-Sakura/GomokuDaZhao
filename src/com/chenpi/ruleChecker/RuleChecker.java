@@ -20,98 +20,37 @@ public class RuleChecker {
   }
 
   public boolean checkWinCondition(Point point) {
-    int horizontal = 1, vertical = 1, mainDiagonal = 1, antiDiagonal = 1;
-    PieceType type = this.board.getPieceType(point);
+    PieceType currentType = gameState.getBoard().getPieceType(point);
 
-    // HorizontalCheck
-    for (int i = point.getX() + 1;; i++) {
-      Point point1 = new Point(i, point.getY());
-      if (this.board.getPieceType(point1) == type) {
-        horizontal++;
-      }
-      else {
-        break;
-      }
-    }
-    for (int i = point.getX() - 1;; i--) {
-      Point point1 = new Point(i, point.getY());
-      if (this.board.getPieceType(point1) == type) {
-        horizontal++;
-      }
-      else {
-        break;
-      }
-    }
-    if (horizontal >= 5) {
-      return true;
-    }
+    for (int dx = -1; dx <= 1; dx++) {
+      for (int dy = -1; dy <= 1; dy++) {
+        if (dx == 0 && dy == 0) continue;
 
-    // VerticalCheck
-    for (int i = point.getY() + 1;; i++) {
-      Point point1 = new Point(point.getX(), i);
-      if (this.board.getPieceType(point1) == type) {
-        vertical++;
-      }
-      else {
-        break;
+        int count = 1;
+        count += countDirection(point, dx, dy, currentType);
+        count += countDirection(point, -dx, -dy, currentType);
+
+        if (count >= 5) return true;
       }
     }
-    for (int i = point.getY() - 1;; i--) {
-      Point point1 = new Point(point.getX(), i);
-      if (this.board.getPieceType(point1) == type) {
-        vertical++;
-      }
-      else {
-        break;
-      }
-    }
-    if (vertical >= 5) {
-      return true;
+    return false;
+  }
+
+  private int countDirection(Point start, int dx, int dy, PieceType type) {
+    int count = 0;
+    int x = start.getX() + dx;
+    int y = start.getY() + dy;
+    Point next = new Point(x, y);
+
+    while (gameState.getBoard().isCellValid(next)
+            && gameState.getBoard().getPieceType(next) == type) {
+      count++;
+      x += dx;
+      y += dy;
+      next = new Point(x, y);
     }
 
-    // MainDiagonalCheck
-    for (int i = 1;; i++) {
-      Point point1 = new Point(point.getX() + i, point.getY() + i);
-      if (this.board.getPieceType(point1) == type) {
-        mainDiagonal++;
-      }
-      else {
-        break;
-      }
-    }
-    for (int i = -1;; i--) {
-      Point point1 = new Point(point.getX() + i, point.getY() + i);
-      if (this.board.getPieceType(point1) == type) {
-        mainDiagonal++;
-      }
-      else {
-        break;
-      }
-    }
-    if (mainDiagonal >= 5) {
-      return true;
-    }
-
-    // AntiDiagonalCheck
-    for (int i = 1;; i++) {
-      Point point1 = new Point(point.getX() + i, point.getY() - i);
-      if (this.board.getPieceType(point1) == type) {
-        antiDiagonal++;
-      }
-      else {
-        break;
-      }
-    }
-    for (int i = -1;; i--) {
-      Point point1 = new Point(point.getX() + i, point.getY() - i);
-      if (this.board.getPieceType(point1) == type) {
-        antiDiagonal++;
-      }
-      else {
-        break;
-      }
-    }
-    return antiDiagonal >= 5;
+    return count;
   }
 
   //TODO:完成技能类来实现该判断

@@ -39,7 +39,8 @@ public class Board {
 
 
   public boolean isCellValid(Point point) {
-    return point.getX() < width && point.getY() < height;
+    return 0 <= point.getX() && point.getX() < width &&
+            0 <= point.getY() && point.getY() < height;
   }
 
   public PieceType getPieceType(Point point) {

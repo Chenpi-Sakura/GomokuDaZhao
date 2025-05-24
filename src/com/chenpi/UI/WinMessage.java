@@ -11,25 +11,28 @@ public class WinMessage extends JDialog {
     JLabel label = new JLabel(winnerName + " Wins!", SwingConstants.CENTER);
 
     JButton restartButton = new JButton("Again");
+    JButton menuButton = new JButton("MainMenu");
     JButton exitButton = new JButton("Exit");
 
     restartButton.addActionListener((ActionEvent e) -> {
       dispose();
-      if (onRestart != null) onRestart.run();
+      onRestart.run();
     });
+
+//    menuButton,addMouseListener();
 
     exitButton.addActionListener((ActionEvent e) -> System.exit(0));
 
     JPanel buttonPanel = new JPanel();
     buttonPanel.add(restartButton);
+    buttonPanel.add(menuButton);
     buttonPanel.add(exitButton);
 
     setLayout(new BorderLayout());
     add(label, BorderLayout.CENTER);
     add(buttonPanel, BorderLayout.SOUTH);
 
-    setSize(250, 120);
+    setSize(300, 120);
     setLocationRelativeTo(parent);
-    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
   }
 }
